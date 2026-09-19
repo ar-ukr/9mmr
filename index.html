@@ -35,16 +35,13 @@
 
         /* Контейнер видео с программным блюром фона */
         .video-box { 
-            position: relative; 
-            width: 100%; 
-            height: 240px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            margin: 8px 0; 
+            width: 220px; 
+            height: 220px; 
+            margin: 12px auto; 
             border-radius: 20px; 
             overflow: hidden; 
-            background-color: #000; 
+            background-color: #000;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); 
         }
 
         /* Размытое видео на заднем плане */
@@ -59,13 +56,9 @@
 
         /* Четкое видео по центру */
         .exercise-video { 
-            position: relative; 
-            z-index: 1; 
+            width: 100%; 
             height: 100%; 
-            width: auto; 
-            object-fit: contain; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            object-fit: cover;
         }
 
         .pause-screen { color: #f59e0b; }
@@ -102,10 +95,6 @@
         <div id="ex-title" class="exercise-title">1. Lymphatic Hops</div>
         
         <div class="video-box">
-            <!-- Фоновый блюр -->
-            <video id="ex-video-blur" autoplay loop muted playsinline class="video-bg-blur">
-                <source id="ex-src-blur" src="ex1.mp4" type="video/mp4">
-            </video>
             <!-- Основной передник -->
             <video id="ex-video" autoplay loop muted playsinline class="exercise-video">
                 <source id="ex-src" src="ex1.mp4" type="video/mp4">
@@ -190,7 +179,7 @@
 
         const video = document.getElementById('ex-video');
         const source = document.getElementById('ex-src');
-        source.src = fileSrc;
+        source.src = `ex${currentStep + 1}.mp4`;
         video.load();
         video.play().catch(e => console.log(e));
 
