@@ -174,23 +174,17 @@
         document.getElementById('ex-title').innerText = ex.name;
         document.getElementById('ex-desc').innerText = ex.desc;
         
-        // Синхронное обновление обох видео (основного и фонового размытого)
-        const fileSrc = `ex${currentStep + 1}.mp4`;
-
+        // Переключение единственного видео
         const video = document.getElementById('ex-video');
         const source = document.getElementById('ex-src');
         source.src = `ex${currentStep + 1}.mp4`;
         video.load();
-        video.play().catch(e => console.log(e));
-
-        const videoBlur = document.getElementById('ex-video-blur');
-        const sourceBlur = document.getElementById('ex-src-blur');
-        sourceBlur.src = fileSrc;
-        videoBlur.load();
-        videoBlur.play().catch(e => console.log(e));
+        video.play().catch(e => console.log("Ошибка воспроизведения:", e));
 
         timeLeft = 60;
         updateTimerDisplay('timer-display', timeLeft);
+
+        if (timerId) clearInterval(timerId);
 
         timerId = setInterval(() => {
             timeLeft--;
@@ -215,6 +209,8 @@
         pauseLeft = 7;
         updateTimerDisplay('pause-timer', pauseLeft);
 
+        if (timerId) clearInterval(timerId);
+
         timerId = setInterval(() => {
             pauseLeft--;
             updateTimerDisplay('pause-timer', pauseLeft);
@@ -233,7 +229,7 @@
     }
 
     function resetApp() {
-        clearInterval(timerId);
+        if (timerId) clearInterval(timerId);
         showScreen('ready-screen');
     }
 </script>
