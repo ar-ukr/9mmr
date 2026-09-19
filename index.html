@@ -2,8 +2,8 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Соматична зарядка 9 хв</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>9MMR - 9 Minute Morning Routine</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -14,45 +14,47 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
+        body { background-color: var(--bg-color); color: var(--text-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 12px; }
 
-        .app-container { width: 100%; max-width: 480px; background-color: var(--card-bg); border-radius: 24px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; position: relative; overflow: hidden; }
-        .screen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 480px; }
+        .app-container { width: 100%; max-width: 440px; background-color: var(--card-bg); border-radius: 24px; padding: 20px 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; position: relative; overflow: hidden; }
+        .screen { display: none; flex-direction: column; align-items: center; justify-content: space-between; min-height: 420px; }
         .screen.active { display: flex; }
 
-        /* Переключатель языка в верхнем углу */
-        .lang-switch { position: absolute; top: 16px; right: 16px; display: flex; gap: 4px; background: #334155; padding: 4px; border-radius: 12px; z-index: 10; }
-        .lang-btn { background: none; border: none; color: var(--muted-color); font-weight: 700; font-size: 0.8rem; padding: 4px 8px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .lang-switch { position: absolute; top: 12px; right: 12px; display: flex; gap: 4px; background: #334155; padding: 3px; border-radius: 10px; z-index: 10; }
+        .lang-btn { background: none; border: none; color: var(--muted-color); font-weight: 700; font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
         .lang-btn.active { background: var(--accent-color); color: #0284c7; }
 
-        h1 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-color); }
-        p { font-size: 0.95rem; line-height: 1.5; color: var(--muted-color); margin-bottom: 16px; }
+        h1 { font-size: 1.35rem; margin-bottom: 8px; color: var(--accent-color); }
+        p { font-size: 0.9rem; line-height: 1.4; color: var(--muted-color); margin-bottom: 12px; }
 
-        .btn { background-color: var(--accent-color); color: #0284c7; font-weight: 700; font-size: 1.1rem; border: none; padding: 16px 32px; border-radius: 16px; cursor: pointer; width: 100%; margin-top: 12px; transition: transform 0.1s, opacity 0.2s; }
+        .btn { background-color: var(--accent-color); color: #0284c7; font-weight: 700; font-size: 1.05rem; border: none; padding: 14px 24px; border-radius: 14px; cursor: pointer; width: 100%; margin-top: 8px; transition: transform 0.1s, opacity 0.2s; }
         .btn:active { transform: scale(0.98); }
 
-        .checkbox-container { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 0.85rem; color: var(--muted-color); }
+        .checkbox-container { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; font-size: 0.8rem; color: var(--muted-color); }
         .checkbox-container input { width: 16px; height: 16px; accent-color: var(--accent-color); }
 
-        .timer { font-size: 3.5rem; font-weight: 800; color: var(--text-color); margin: 8px 0; font-variant-numeric: tabular-nums; }
-        .exercise-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
-        .badge { background: #334155; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; color: var(--accent-color); margin-bottom: 8px; }
+        .timer { font-size: 3.2rem; font-weight: 800; color: var(--text-color); margin: 4px 0; font-variant-numeric: tabular-nums; }
+        .exercise-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 6px; }
+        .badge { background: #334155; padding: 4px 10px; border-radius: 16px; font-size: 0.75rem; color: var(--accent-color); margin-bottom: 6px; }
 
-        /* Квадратный контейнер под видео */
+        /* Адаптивный квадрат под видео */
         .video-box { 
-            width: 320px; 
-            height: 320px; 
-            margin: 12px auto; 
-            border-radius: 20px; 
+            width: 240px; 
+            height: 240px; 
+            max-width: 65vw;
+            max-height: 32vh;
+            margin: 6px auto; 
+            border-radius: 18px; 
             overflow: hidden; 
             background-color: #000;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
         }
 
         .exercise-video { 
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
+            filter: contrast(1.05) saturate(1.08); /* Микро-улучшение картинки */
         }
 
         .pause-screen { color: #f59e0b; }
@@ -63,7 +65,6 @@
 
 <div class="app-container">
 
-    <!-- Переключатель языка -->
     <div class="lang-switch">
         <button id="btn-ua" class="lang-btn active" onclick="setLanguage('ua')">UA</button>
         <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">ENG</button>
@@ -71,28 +72,36 @@
 
     <!-- Экран 1: Приветствие -->
     <div id="welcome-screen" class="screen">
-        <h1 data-i18n="welcomeTitle">Ранкова зарядка</h1>
-        <p data-i18n="welcomeDesc1">Ця 9-хвилинна соматична гімнастика м'яко розганяє лімфу, прибирає ранкові набряки та змащує суглоби.</p>
-        <p data-i18n="welcomeDesc2"><strong>Важливо:</strong> Навіть якщо відчуваєш легкий дискомфорт чи скутість — не пропускай! Просто зроби вправу впівсили. Краще зробити трохи, ніж не зробити взагалі.</p>
+        <div>
+            <h1 data-i18n="welcomeTitle">Ранкова зарядка</h1>
+            <p data-i18n="welcomeDesc1">Ця 9-хвилинна соматична гімнастика м'яко розганяє лімфу, прибирає ранкові набряки та змащує суглоби.</p>
+            <p data-i18n="welcomeDesc2"><strong>Важливо:</strong> Навіть якщо відчуваєш легкий дискомфорт чи скутість — не пропускай! Просто зроби вправу впівсили. Краще зробити трохи, ніж не зробити взагалі.</p>
+        </div>
         
-        <button class="btn" onclick="closeWelcome()" data-i18n="btnOk">Зрозуміло, ОК</button>
-        <div class="checkbox-container">
-            <input type="checkbox" id="dont-show">
-            <label for="dont-show" data-i18n="dontShow">Більше не показувати</label>
+        <div style="width: 100%;">
+            <button class="btn" onclick="closeWelcome()" data-i18n="btnOk">Зрозуміло, ОК</button>
+            <div class="checkbox-container">
+                <input type="checkbox" id="dont-show">
+                <label for="dont-show" data-i18n="dontShow">Більше не показувати</label>
+            </div>
         </div>
     </div>
 
     <!-- Экран 2: Готов к старту -->
     <div id="ready-screen" class="screen">
-        <h1 data-i18n="readyTitle">ГОТОВИЙ?</h1>
-        <p data-i18n="readyDesc">Попереду 9 вправ по 1 хвилині.<br>Налаштовуйся на плавне дихання.</p>
-        <button class="btn" style="font-size: 1.4rem; padding: 20px;" onclick="startWorkout()" data-i18n="btnStart">ПОЧАЛИ</button>
+        <div style="margin: auto 0;">
+            <h1 data-i18n="readyTitle" style="font-size: 2rem;">ГОТОВИЙ?</h1>
+            <p data-i18n="readyDesc">Попереду 9 вправ по 1 хвилині.<br>Налаштовуйся на плавне дихання.</p>
+        </div>
+        <button class="btn" style="font-size: 1.3rem; padding: 18px;" onclick="startWorkout()" data-i18n="btnStart">ПОЧАЛИ</button>
     </div>
 
     <!-- Экран 3: Таймер и упражнение -->
     <div id="workout-screen" class="screen">
-        <div id="step-badge" class="badge">Вправа 1 з 9</div>
-        <div id="ex-title" class="exercise-title">1. Lymphatic Hops</div>
+        <div>
+            <div id="step-badge" class="badge">Вправа 1 з 9</div>
+            <div id="ex-title" class="exercise-title">1. Lymphatic Hops</div>
+        </div>
         
         <div class="video-box">
             <video id="ex-video" autoplay loop muted playsinline class="exercise-video">
@@ -100,24 +109,29 @@
             </video>
         </div>
 
-        <div id="timer-display" class="timer">01:00</div>
-        <p id="ex-desc" style="font-size: 0.85rem; margin-bottom: 0;">М'які пружинисті переступання на носках</p>
+        <div>
+            <div id="timer-display" class="timer">01:00</div>
+            <p id="ex-desc" style="font-size: 0.8rem; margin-bottom: 0;">М'які пружинисті переступання на носках</p>
+        </div>
     </div>
 
-    <!-- Экран 4: Пауза перед следующим упражнением -->
+    <!-- Экран 4: Пауза -->
     <div id="pause-screen" class="screen pause-screen">
-        <div class="badge" style="background: #451a03; color: #f59e0b;" data-i18n="pauseBadge">Готуйся</div>
-        <p style="color: var(--text-color); font-weight: 600; margin-bottom: 4px;" data-i18n="pauseNext">Наступна вправа:</p>
-        <div id="next-ex-title" class="exercise-title" style="color: var(--accent-color);">2. Body Waves</div>
-        
-        <div id="pause-timer" class="timer">00:07</div>
+        <div style="margin: auto 0;">
+            <div class="badge" style="background: #451a03; color: #f59e0b;" data-i18n="pauseBadge">Готуйся</div>
+            <p style="color: var(--text-color); font-weight: 600; margin-bottom: 4px;" data-i18n="pauseNext">Наступна вправа:</p>
+            <div id="next-ex-title" class="exercise-title" style="color: var(--accent-color); font-size: 1.4rem;">2. Body Waves</div>
+            <div id="pause-timer" class="timer">00:07</div>
+        </div>
     </div>
 
     <!-- Экран 5: Финал -->
     <div id="finish-screen" class="screen">
-        <h1 style="font-size: 2.2rem; color: #4ade80; margin-bottom: 16px;" data-i18n="finishTitle">ТИ МОЛОДЕЦЬ! 🎉</h1>
-        <p data-i18n="finishDesc">Зарядку закінчено. Тіло та суглоби подякують тобі за цей день.</p>
-        <button class="btn" onclick="resetApp()" data-i18n="btnHome">На головну</button>
+        <div style="margin: auto 0;">
+            <h1 style="font-size: 2.2rem; color: #4ade80; margin-bottom: 12px;" data-i18n="finishTitle">ТИ МОЛОДЕЦЬ! 🎉</h1>
+            <p data-i18n="finishDesc">Зарядку закінчено. Тіло та суглоби подякують тобі за цей день.</p>
+        </div>
+        <button class="btn" onclick="finishWorkout()" data-i18n="btnHome">До завтра!</button>
     </div>
 
 </div>
@@ -137,7 +151,7 @@
             pauseNext: "Наступна вправа:",
             finishTitle: "ТИ МОЛОДЕЦЬ! 🎉",
             finishDesc: "Зарядку закінчено. Тіло та суглоби подякують тобі за цей день.",
-            btnHome: "На головну",
+            btnHome: "До завтра!",
             exBadge: (cur, total) => `Вправа ${cur} з ${total}`
         },
         en: {
@@ -153,48 +167,21 @@
             pauseNext: "Next exercise:",
             finishTitle: "GREAT JOB! 🎉",
             finishDesc: "Routine completed. Your body and joints will thank you today.",
-            btnHome: "To Main Menu",
+            btnHome: "Until tomorrow!",
             exBadge: (cur, total) => `Exercise ${cur} of ${total}`
         }
     };
 
     const exercises = [
-        { 
-            name: "1. Lymphatic Hops", 
-            desc: { ua: "М'які пружинисті переступання на носках", en: "Gentle bouncing hops on toes" } 
-        },
-        { 
-            name: "2. Body Waves", 
-            desc: { ua: "Хвилеподібні рухи корпусом і хребтом", en: "Wave-like movements with spine and torso" } 
-        },
-        { 
-            name: "3. Trunk Twists", 
-            desc: { ua: "Плавні скручування корпусу в сторони", en: "Smooth torso rotations side to side" } 
-        },
-        { 
-            name: "4. Arm Swings", 
-            desc: { ua: "Вільні махи руками вперед і назад", en: "Loose arm swings forward and backward" } 
-        },
-        { 
-            name: "5. Dead Arms", 
-            desc: { ua: "Струшування розслабленими руками", en: "Shaking out fully relaxed arms" } 
-        },
-        { 
-            name: "6. Golf Swings", 
-            desc: { ua: "Махові рухи по діагоналі з поворотом таза", en: "Diagonal swings with hip turn" } 
-        },
-        { 
-            name: "7. Marches", 
-            desc: { ua: "Широкий крок на місці з високим підйомом колін", en: "High-knee marching in place" } 
-        },
-        { 
-            name: "8. Ballet Squats", 
-            desc: { ua: "Плавні широкі присідання з підйомом рук", en: "Smooth wide plie squats with arm raise" } 
-        },
-        { 
-            name: "9. Horseback Stance", 
-            desc: { ua: "Утримання широкого напівприсіду з рівним диханням", en: "Wide isometric squat hold with steady breathing" } 
-        }
+        { name: "1. Lymphatic Hops", desc: { ua: "М'які пружинисті переступання на носках", en: "Gentle bouncing hops on toes" } },
+        { name: "2. Body Waves", desc: { ua: "Хвилеподібні рухи корпусом і хребтом", en: "Wave-like movements with spine and torso" } },
+        { name: "3. Trunk Twists", desc: { ua: "Плавні скручування корпусу в сторони", en: "Smooth torso rotations side to side" } },
+        { name: "4. Arm Swings", desc: { ua: "Вільні махи руками вперед і назад", en: "Loose arm swings forward and backward" } },
+        { name: "5. Dead Arms", desc: { ua: "Струшування розслабленими руками", en: "Shaking out fully relaxed arms" } },
+        { name: "6. Golf Swings", desc: { ua: "Махові рухи по діагоналі з поворотом таза", en: "Diagonal swings with hip turn" } },
+        { name: "7. Marches", desc: { ua: "Широкий крок на місці з високим підйомом колін", en: "High-knee marching in place" } },
+        { name: "8. Ballet Squats", desc: { ua: "Плавні широкі присідання з підйомом рук", en: "Smooth wide plie squats with arm raise" } },
+        { name: "9. Horseback Stance", desc: { ua: "Утримання широкого напівприсіду з рівним диханням", en: "Wide isometric squat hold with steady breathing" } }
     ];
 
     let currentLang = localStorage.getItem('appLang') || 'ua';
@@ -220,7 +207,6 @@
         document.getElementById('btn-ua').classList.toggle('active', lang === 'ua');
         document.getElementById('btn-en').classList.toggle('active', lang === 'en');
 
-        // Перевод статических элементов UI
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (translations[lang][key]) {
@@ -228,7 +214,6 @@
             }
         });
 
-        // Обновление текущего текста упражнения, если идет тренировка
         if (document.getElementById('workout-screen').classList.contains('active')) {
             updateExerciseInfo();
         }
@@ -241,7 +226,6 @@
         document.getElementById('ex-desc').innerText = ex.desc[currentLang];
     }
 
-    // Блокировка засыпания экрана
     async function requestWakeLock() {
         try {
             if ('wakeLock' in navigator) {
@@ -272,7 +256,7 @@
     }
 
     function startWorkout() {
-        requestWakeLock(); // Включаем запрет на тушение экрана
+        requestWakeLock();
         currentStep = 0;
         runExercise();
     }
@@ -302,7 +286,7 @@
                 if (currentStep < exercises.length) {
                     runPause();
                 } else {
-                    releaseWakeLock(); // Отпускаем экран после окончания
+                    releaseWakeLock();
                     showScreen('finish-screen');
                 }
             }
@@ -335,10 +319,13 @@
         document.getElementById(elementId).innerText = `${mins}:${secs}`;
     }
 
-    function resetApp() {
+    function finishWorkout() {
         releaseWakeLock();
         if (timerId) clearInterval(timerId);
         showScreen('ready-screen');
+        
+        // Попытка закрыть окно, если браузер разрешит
+        try { window.close(); } catch(e) {}
     }
 </script>
 
