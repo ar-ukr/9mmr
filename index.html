@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Соматическая зарядка 9 мин</title>
+    <title>Соматична зарядка 9 хв</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -20,6 +20,11 @@
         .screen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 480px; }
         .screen.active { display: flex; }
 
+        /* Переключатель языка в верхнем углу */
+        .lang-switch { position: absolute; top: 16px; right: 16px; display: flex; gap: 4px; background: #334155; padding: 4px; border-radius: 12px; z-index: 10; }
+        .lang-btn { background: none; border: none; color: var(--muted-color); font-weight: 700; font-size: 0.8rem; padding: 4px 8px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .lang-btn.active { background: var(--accent-color); color: #0284c7; }
+
         h1 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-color); }
         p { font-size: 0.95rem; line-height: 1.5; color: var(--muted-color); margin-bottom: 16px; }
 
@@ -33,7 +38,7 @@
         .exercise-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
         .badge { background: #334155; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; color: var(--accent-color); margin-bottom: 8px; }
 
-        /* Контейнер видео с программным блюром фона */
+        /* Квадратный контейнер под видео */
         .video-box { 
             width: 220px; 
             height: 220px; 
@@ -41,24 +46,13 @@
             border-radius: 20px; 
             overflow: hidden; 
             background-color: #000;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); 
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
-        /* Размытое видео на заднем плане */
-        .video-bg-blur { 
-            position: absolute; 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            filter: blur(16px) brightness(0.5); 
-            transform: scale(1.1); 
-        }
-
-        /* Четкое видео по центру */
         .exercise-video { 
             width: 100%; 
             height: 100%; 
-            object-fit: cover;
+            object-fit: cover; 
         }
 
         .pause-screen { color: #f59e0b; }
@@ -69,46 +63,51 @@
 
 <div class="app-container">
 
+    <!-- Переключатель языка -->
+    <div class="lang-switch">
+        <button id="btn-ua" class="lang-btn active" onclick="setLanguage('ua')">UA</button>
+        <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">ENG</button>
+    </div>
+
     <!-- Экран 1: Приветствие -->
     <div id="welcome-screen" class="screen">
-        <h1>Утренняя зарядка</h1>
-        <p>Эта 9-минутная соматическая гимнастика мягко разгоняет лимфу, прогоняет утренние отеки и смазывает суставы.</p>
-        <p><strong>Важно:</strong> Даже если чувствуешь легкий дискомфорт или скованность — не пропускай! Просто сделай упражнение вполсилы, с меньшей амплитудой. Лучше сделать чуть-чуть, чем не сделать вообще.</p>
+        <h1 data-i18n="welcomeTitle">Ранкова зарядка</h1>
+        <p data-i18n="welcomeDesc1">Ця 9-хвилинна соматична гімнастика м'яко розганяє лімфу, прибирає ранкові набряки та змащує суглоби.</p>
+        <p data-i18n="welcomeDesc2"><strong>Важливо:</strong> Навіть якщо відчуваєш легкий дискомфорт чи скутість — не пропускай! Просто зроби вправу впівсили. Краще зробити трохи, ніж не зробити взагалі.</p>
         
-        <button class="btn" onclick="closeWelcome()">Понятно, ОК</button>
+        <button class="btn" onclick="closeWelcome()" data-i18n="btnOk">Зрозуміло, ОК</button>
         <div class="checkbox-container">
             <input type="checkbox" id="dont-show">
-            <label for="dont-show">Больше не показывать</label>
+            <label for="dont-show" data-i18n="dontShow">Більше не показувати</label>
         </div>
     </div>
 
     <!-- Экран 2: Готов к старту -->
     <div id="ready-screen" class="screen">
-        <h1>ГОТОВ?</h1>
-        <p>Впереди 9 упражнений по 1 минуте.<br>Настраивайся на плавное дыхание.</p>
-        <button class="btn" style="font-size: 1.4rem; padding: 20px;" onclick="startWorkout()">НАЧАЛИ</button>
+        <h1 data-i18n="readyTitle">ГОТОВИЙ?</h1>
+        <p data-i18n="readyDesc">Попереду 9 вправ по 1 хвилині.<br>Налаштовуйся на плавне дихання.</p>
+        <button class="btn" style="font-size: 1.4rem; padding: 20px;" onclick="startWorkout()" data-i18n="btnStart">ПОЧАЛИ</button>
     </div>
 
     <!-- Экран 3: Таймер и упражнение -->
     <div id="workout-screen" class="screen">
-        <div id="step-badge" class="badge">Упражнение 1 из 9</div>
+        <div id="step-badge" class="badge">Вправа 1 з 9</div>
         <div id="ex-title" class="exercise-title">1. Lymphatic Hops</div>
         
         <div class="video-box">
-            <!-- Основной передник -->
             <video id="ex-video" autoplay loop muted playsinline class="exercise-video">
                 <source id="ex-src" src="ex1.mp4" type="video/mp4">
             </video>
         </div>
 
         <div id="timer-display" class="timer">01:00</div>
-        <p id="ex-desc" style="font-size: 0.85rem; margin-bottom: 0;">Мягкие пружинящие переступания на стопах</p>
+        <p id="ex-desc" style="font-size: 0.85rem; margin-bottom: 0;">М'які пружинисті переступання на носках</p>
     </div>
 
     <!-- Экран 4: Пауза перед следующим упражнением -->
     <div id="pause-screen" class="screen pause-screen">
-        <div class="badge" style="background: #451a03; color: #f59e0b;">Готовься</div>
-        <p style="color: var(--text-color); font-weight: 600; margin-bottom: 4px;">Следующее упражнение:</p>
+        <div class="badge" style="background: #451a03; color: #f59e0b;" data-i18n="pauseBadge">Готуйся</div>
+        <p style="color: var(--text-color); font-weight: 600; margin-bottom: 4px;" data-i18n="pauseNext">Наступна вправа:</p>
         <div id="next-ex-title" class="exercise-title" style="color: var(--accent-color);">2. Body Waves</div>
         
         <div id="pause-timer" class="timer">00:07</div>
@@ -116,38 +115,149 @@
 
     <!-- Экран 5: Финал -->
     <div id="finish-screen" class="screen">
-        <h1 style="font-size: 2.2rem; color: #4ade80; margin-bottom: 16px;">ТЫ МОЛОДЕЦ! 🎉</h1>
-        <p>Зарядка окончена. Тело и суставы скажут тебе спасибо за этот день.</p>
-        <button class="btn" onclick="resetApp()">На главную</button>
+        <h1 style="font-size: 2.2rem; color: #4ade80; margin-bottom: 16px;" data-i18n="finishTitle">ТИ МОЛОДЕЦЬ! 🎉</h1>
+        <p data-i18n="finishDesc">Зарядку закінчено. Тіло та суглоби подякують тобі за цей день.</p>
+        <button class="btn" onclick="resetApp()" data-i18n="btnHome">На головну</button>
     </div>
 
 </div>
 
 <script>
+    const translations = {
+        ua: {
+            welcomeTitle: "Ранкова зарядка",
+            welcomeDesc1: "Ця 9-хвилинна соматична гімнастика м'яко розганяє лімфу, прибирає ранкові набряки та змащує суглоби.",
+            welcomeDesc2: "<strong>Важливо:</strong> Навіть якщо відчуваєш легкий дискомфорт чи скутість — не пропускай! Просто зроби вправу впівсили. Краще зробити трохи, ніж не зробити взагалі.",
+            btnOk: "Зрозуміло, ОК",
+            dontShow: "Більше не показувати",
+            readyTitle: "ГОТОВИЙ?",
+            readyDesc: "Попереду 9 вправ по 1 хвилині.<br>Налаштовуйся на плавне дихання.",
+            btnStart: "ПОЧАЛИ",
+            pauseBadge: "Готуйся",
+            pauseNext: "Наступна вправа:",
+            finishTitle: "ТИ МОЛОДЕЦЬ! 🎉",
+            finishDesc: "Зарядку закінчено. Тіло та суглоби подякують тобі за цей день.",
+            btnHome: "На головну",
+            exBadge: (cur, total) => `Вправа ${cur} з ${total}`
+        },
+        en: {
+            welcomeTitle: "Morning Routine",
+            welcomeDesc1: "This 9-minute somatic routine gently boosts lymphatic flow, reduces morning swelling, and lubricates joints.",
+            welcomeDesc2: "<strong>Important:</strong> Even if you feel slight stiffness or discomfort — don't skip! Just do the exercise at half-capacity. Doing a little is better than doing nothing.",
+            btnOk: "Got it, OK",
+            dontShow: "Don't show again",
+            readyTitle: "READY?",
+            readyDesc: "9 exercises, 1 minute each ahead.<br>Focus on smooth breathing.",
+            btnStart: "START",
+            pauseBadge: "Get ready",
+            pauseNext: "Next exercise:",
+            finishTitle: "GREAT JOB! 🎉",
+            finishDesc: "Routine completed. Your body and joints will thank you today.",
+            btnHome: "To Main Menu",
+            exBadge: (cur, total) => `Exercise ${cur} of ${total}`
+        }
+    };
+
     const exercises = [
-        { name: "1. Lymphatic Hops", desc: "Мягкие пружинящие переступания на носках" },
-        { name: "2. Body Waves", desc: "Волнообразные движения корпусом и позвоночником" },
-        { name: "3. Trunk Twists", desc: "Плавные скручивания корпуса в стороны" },
-        { name: "4. Arm Swings", desc: "Свободные махи руками вперед и назад" },
-        { name: "5. Dead Arms", desc: "Встряхивание расслабленными руками" },
-        { name: "6. Golf Swings", desc: "Маховые движения по диагонали с поворотом таза" },
-        { name: "7. Marches", desc: "Размашистый шаг на месте с высоким подъемом колен" },
-        { name: "8. Ballet Squats", desc: "Плавные широкие приседания с подъемом рук" },
-        { name: "9. Horseback Stance", desc: "Удержание широкого полуприседа с ровным дыханием" }
+        { 
+            name: "1. Lymphatic Hops", 
+            desc: { ua: "М'які пружинисті переступання на носках", en: "Gentle bouncing hops on toes" } 
+        },
+        { 
+            name: "2. Body Waves", 
+            desc: { ua: "Хвилеподібні рухи корпусом і хребтом", en: "Wave-like movements with spine and torso" } 
+        },
+        { 
+            name: "3. Trunk Twists", 
+            desc: { ua: "Плавні скручування корпусу в сторони", en: "Smooth torso rotations side to side" } 
+        },
+        { 
+            name: "4. Arm Swings", 
+            desc: { ua: "Вільні махи руками вперед і назад", en: "Loose arm swings forward and backward" } 
+        },
+        { 
+            name: "5. Dead Arms", 
+            desc: { ua: "Струшування розслабленими руками", en: "Shaking out fully relaxed arms" } 
+        },
+        { 
+            name: "6. Golf Swings", 
+            desc: { ua: "Махові рухи по діагоналі з поворотом таза", en: "Diagonal swings with hip turn" } 
+        },
+        { 
+            name: "7. Marches", 
+            desc: { ua: "Широкий крок на місці з високим підйомом колін", en: "High-knee marching in place" } 
+        },
+        { 
+            name: "8. Ballet Squats", 
+            desc: { ua: "Плавні широкі присідання з підйомом рук", en: "Smooth wide plie squats with arm raise" } 
+        },
+        { 
+            name: "9. Horseback Stance", 
+            desc: { ua: "Утримання широкого напівприсіду з рівним диханням", en: "Wide isometric squat hold with steady breathing" } 
+        }
     ];
 
+    let currentLang = localStorage.getItem('appLang') || 'ua';
     let currentStep = 0;
     let timeLeft = 60;
     let pauseLeft = 7;
     let timerId = null;
+    let wakeLock = null;
 
     window.onload = function() {
+        setLanguage(currentLang);
         if (localStorage.getItem('hideWelcome') === 'true') {
             showScreen('ready-screen');
         } else {
             showScreen('welcome-screen');
         }
     };
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('appLang', lang);
+
+        document.getElementById('btn-ua').classList.toggle('active', lang === 'ua');
+        document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+
+        // Перевод статических элементов UI
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang][key]) {
+                el.innerHTML = translations[lang][key];
+            }
+        });
+
+        // Обновление текущего текста упражнения, если идет тренировка
+        if (document.getElementById('workout-screen').classList.contains('active')) {
+            updateExerciseInfo();
+        }
+    }
+
+    function updateExerciseInfo() {
+        const ex = exercises[currentStep];
+        document.getElementById('step-badge').innerText = translations[currentLang].exBadge(currentStep + 1, exercises.length);
+        document.getElementById('ex-title').innerText = ex.name;
+        document.getElementById('ex-desc').innerText = ex.desc[currentLang];
+    }
+
+    // Блокировка засыпания экрана
+    async function requestWakeLock() {
+        try {
+            if ('wakeLock' in navigator) {
+                wakeLock = await navigator.wakeLock.request('screen');
+            }
+        } catch (err) {
+            console.log('Wake Lock Error:', err.message);
+        }
+    }
+
+    function releaseWakeLock() {
+        if (wakeLock !== null) {
+            wakeLock.release();
+            wakeLock = null;
+        }
+    }
 
     function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -162,24 +272,20 @@
     }
 
     function startWorkout() {
+        requestWakeLock(); // Включаем запрет на тушение экрана
         currentStep = 0;
         runExercise();
     }
 
     function runExercise() {
         showScreen('workout-screen');
-        const ex = exercises[currentStep];
+        updateExerciseInfo();
         
-        document.getElementById('step-badge').innerText = `Упражнение ${currentStep + 1} из 9`;
-        document.getElementById('ex-title').innerText = ex.name;
-        document.getElementById('ex-desc').innerText = ex.desc;
-        
-        // Переключение единственного видео
         const video = document.getElementById('ex-video');
         const source = document.getElementById('ex-src');
         source.src = `ex${currentStep + 1}.mp4`;
         video.load();
-        video.play().catch(e => console.log("Ошибка воспроизведения:", e));
+        video.play().catch(e => console.log(e));
 
         timeLeft = 60;
         updateTimerDisplay('timer-display', timeLeft);
@@ -196,6 +302,7 @@
                 if (currentStep < exercises.length) {
                     runPause();
                 } else {
+                    releaseWakeLock(); // Отпускаем экран после окончания
                     showScreen('finish-screen');
                 }
             }
@@ -229,6 +336,7 @@
     }
 
     function resetApp() {
+        releaseWakeLock();
         if (timerId) clearInterval(timerId);
         showScreen('ready-screen');
     }
