@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Соматическая зарядка 9 мин</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --text-color: #f8fafc;
+            --muted-color: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
+
+        .app-container { width: 100%; max-width: 480px; background-color: var(--card-bg); border-radius: 24px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; position: relative; overflow: hidden; }
+        .screen { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 480px; }
+        .screen.active { display: flex; }
+
+        h1 { font-size: 1.5rem; margin-bottom: 12px; color: var(--accent-color); }
+        p { font-size: 0.95rem; line-height: 1.5; color: var(--muted-color); margin-bottom: 16px; }
+
+        .btn { background-color: var(--accent-color); color: #0284c7; font-weight: 700; font-size: 1.1rem; border: none; padding: 16px 32px; border-radius: 16px; cursor: pointer; width: 100%; margin-top: 12px; transition: transform 0.1s, opacity 0.2s; }
+        .btn:active { transform: scale(0.98); }
+
+        .checkbox-container { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 0.85rem; color: var(--muted-color); }
+        .checkbox-container input { width: 16px; height: 16px; accent-color: var(--accent-color); }
+
+        .timer { font-size: 3.5rem; font-weight: 800; color: var(--text-color); margin: 8px 0; font-variant-numeric: tabular-nums; }
+        .exercise-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
+        .badge { background: #334155; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; color: var(--accent-color); margin-bottom: 8px; }
+
+        /* Контейнер видео с программным блюром фона */
+        .video-box { 
+            position: relative; 
+            width: 100%; 
+            height: 240px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            margin: 8px 0; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            background-color: #000; 
+        }
+
+        /* Размытое видео на заднем плане */
+        .video-bg-blur { 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            filter: blur(16px) brightness(0.5); 
+            transform: scale(1.1); 
+        }
+
+        /* Четкое видео по центру */
+        .exercise-video { 
+            position: relative; 
+            z-index: 1; 
+            height: 100%; 
+            width: auto; 
+            object-fit: contain; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .pause-screen { color: #f59e0b; }
+        .pause-screen .timer { color: #f59e0b; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- Экран 1: Приветствие -->
+    <div id="welcome-screen" class="screen">
+        <h1>Утренняя зарядка</h1>
+        <p>Эта 9-минутная соматическая гимнастика мягко разгоняет лимфу, прогоняет утренние отеки и смазывает суставы.</p>
+        <p><strong>Важно:</strong> Даже если чувствуешь легкий дискомфорт или скованность — не пропускай! Просто сделай упражнение вполсилы, с меньшей амплитудой. Лучше сделать чуть-чуть, чем не сделать вообще.</p>
+        
+        <button class="btn" onclick="closeWelcome()">Понятно, ОК</button>
+        <div class="checkbox-container">
+            <input type="checkbox" id="dont-show">
+            <label for="dont-show">Больше не показывать</label>
+        </div>
+    </div>
+
+    <!-- Экран 2: Готов к старту -->
+    <div id="ready-screen" class="screen">
+        <h1>ГОТОВ?</h1>
+        <p>Впереди 9 упражнений по 1 минуте.<br>Настраивайся на плавное дыхание.</p>
+        <button class="btn" style="font-size: 1.4rem; padding: 20px;" onclick="startWorkout()">НАЧАЛИ</button>
+    </div>
+
+    <!-- Экран 3: Таймер и упражнение -->
+    <div id="workout-screen" class="screen">
+        <div id="step-badge" class="badge">Упражнение 1 из 9</div>
+        <div id="ex-title" class="exercise-title">1. Lymphatic Hops</div>
+        
+        <div class="video-box">
+            <!-- Фоновый блюр -->
+            <video id="ex-video-blur" autoplay loop muted playsinline class="video-bg-blur">
+                <source id="ex-src-blur" src="ex1.mp4" type="video/mp4">
+            </video>
+            <!-- Основной передник -->
+            <video id="ex-video" autoplay loop muted playsinline class="exercise-video">
+                <source id="ex-src" src="ex1.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div id="timer-display" class="timer">01:00</div>
+        <p id="ex-desc" style="font-size: 0.85rem; margin-bottom: 0;">Мягкие пружинящие переступания на стопах</p>
+    </div>
+
+    <!-- Экран 4: Пауза перед следующим упражнением -->
+    <div id="pause-screen" class="screen pause-screen">
+        <div class="badge" style="background: #451a03; color: #f59e0b;">Готовься</div>
+        <p style="color: var(--text-color); font-weight: 600; margin-bottom: 4px;">Следующее упражнение:</p>
+        <div id="next-ex-title" class="exercise-title" style="color: var(--accent-color);">2. Body Waves</div>
+        
+        <div id="pause-timer" class="timer">00:07</div>
+    </div>
+
+    <!-- Экран 5: Финал -->
+    <div id="finish-screen" class="screen">
+        <h1 style="font-size: 2.2rem; color: #4ade80; margin-bottom: 16px;">ТЫ МОЛОДЕЦ! 🎉</h1>
+        <p>Зарядка окончена. Тело и суставы скажут тебе спасибо за этот день.</p>
+        <button class="btn" onclick="resetApp()">На главную</button>
+    </div>
+
+</div>
+
+<script>
+    const exercises = [
+        { name: "1. Lymphatic Hops", desc: "Мягкие пружинящие переступания на носках" },
+        { name: "2. Body Waves", desc: "Волнообразные движения корпусом и позвоночником" },
+        { name: "3. Trunk Twists", desc: "Плавные скручивания корпуса в стороны" },
+        { name: "4. Arm Swings", desc: "Свободные махи руками вперед и назад" },
+        { name: "5. Dead Arms", desc: "Встряхивание расслабленными руками" },
+        { name: "6. Golf Swings", desc: "Маховые движения по диагонали с поворотом таза" },
+        { name: "7. Marches", desc: "Размашистый шаг на месте с высоким подъемом колен" },
+        { name: "8. Ballet Squats", desc: "Плавные широкие приседания с подъемом рук" },
+        { name: "9. Horseback Stance", desc: "Удержание широкого полуприседа с ровным дыханием" }
+    ];
+
+    let currentStep = 0;
+    let timeLeft = 60;
+    let pauseLeft = 7;
+    let timerId = null;
+
+    window.onload = function() {
+        if (localStorage.getItem('hideWelcome') === 'true') {
+            showScreen('ready-screen');
+        } else {
+            showScreen('welcome-screen');
+        }
+    };
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function closeWelcome() {
+        if (document.getElementById('dont-show').checked) {
+            localStorage.setItem('hideWelcome', 'true');
+        }
+        showScreen('ready-screen');
+    }
+
+    function startWorkout() {
+        currentStep = 0;
+        runExercise();
+    }
+
+    function runExercise() {
+        showScreen('workout-screen');
+        const ex = exercises[currentStep];
+        
+        document.getElementById('step-badge').innerText = `Упражнение ${currentStep + 1} из 9`;
+        document.getElementById('ex-title').innerText = ex.name;
+        document.getElementById('ex-desc').innerText = ex.desc;
+        
+        // Синхронное обновление обох видео (основного и фонового размытого)
+        const fileSrc = `ex${currentStep + 1}.mp4`;
+
+        const video = document.getElementById('ex-video');
+        const source = document.getElementById('ex-src');
+        source.src = fileSrc;
+        video.load();
+        video.play().catch(e => console.log(e));
+
+        const videoBlur = document.getElementById('ex-video-blur');
+        const sourceBlur = document.getElementById('ex-src-blur');
+        sourceBlur.src = fileSrc;
+        videoBlur.load();
+        videoBlur.play().catch(e => console.log(e));
+
+        timeLeft = 60;
+        updateTimerDisplay('timer-display', timeLeft);
+
+        timerId = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay('timer-display', timeLeft);
+
+            if (timeLeft <= 0) {
+                clearInterval(timerId);
+                currentStep++;
+                if (currentStep < exercises.length) {
+                    runPause();
+                } else {
+                    showScreen('finish-screen');
+                }
+            }
+        }, 1000);
+    }
+
+    function runPause() {
+        showScreen('pause-screen');
+        document.getElementById('next-ex-title').innerText = exercises[currentStep].name;
+        
+        pauseLeft = 7;
+        updateTimerDisplay('pause-timer', pauseLeft);
+
+        timerId = setInterval(() => {
+            pauseLeft--;
+            updateTimerDisplay('pause-timer', pauseLeft);
+
+            if (pauseLeft <= 0) {
+                clearInterval(timerId);
+                runExercise();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay(elementId, seconds) {
+        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const secs = (seconds % 60).toString().padStart(2, '0');
+        document.getElementById(elementId).innerText = `${mins}:${secs}`;
+    }
+
+    function resetApp() {
+        clearInterval(timerId);
+        showScreen('ready-screen');
+    }
+</script>
+
+</body>
+</html>
